@@ -1,18 +1,25 @@
 from fastapi import APIRouter, UploadFile, File
 from app.services import ai_model, uart
 from app.schemas.predict import PredictionResponse
+from fastapi.responses import JSONResponse
+from io import BytesIO
+from PIL import Image
+import numpy as np
 
 router = APIRouter()
 
-@router.post("/predict", response_model=PredictionResponse)
-async def predict(file: UploadFile = File(...)):
-    # đọc dữ liệu ảnh upload
-    img_bytes = await file.read()
+@router.post("/upload_frame/")
+async def upload_frame(file: UploadFile = File(...)):
+    # Đọc dữ liệu ảnh
+    image_bytes = await file.read()
+    image = Image.open(BytesIO(image_bytes))
 
-    # AI model inference
-    label = ai_model.predict_image(img_bytes)
+    # Convert sang numpy (giống như OpenCV dùng)
+    frame = np.array(image)
 
-    # gửi lệnh UART xuống STM32
-    uart.send_command(label)
+    # 👉 Ở đây bạn xử lý AI hoặc gửi UART sang STM32
+    # ví dụ:
+    # command = ai_model.predict(frame)
+    # send_uart(command)
 
-    return {"prediction": label, "status": "sent to STM32"}
+    return JSONResponse({"status": "ok", "shape": frame.shape})
