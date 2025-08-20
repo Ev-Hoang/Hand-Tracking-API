@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from collections import deque
 from tensorflow.keras.models import load_model
+from tensorflow.keras import layers
 import mediapipe as mp
 
 # ====== Config ======
