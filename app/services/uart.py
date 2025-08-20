@@ -1,8 +1,11 @@
 import serial
 
 # cấu hình UART
-ser = serial.Serial("COM3", 115200, timeout=1)  # Windows
-# ser = serial.Serial("/dev/ttyUSB0", 115200, timeout=1)  # Linux
+try:
+    ser = serial.Serial("COM5", 115200, timeout=1)
+except serial.SerialException as e:
+    ser = None
+    print(f"[UART] Không thể mở cổng: {e}")
 
 def send_command(command: str):
     msg = (command + "\n").encode()
