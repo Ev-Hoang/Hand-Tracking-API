@@ -1,10 +1,7 @@
-from fastapi import APIRouter, WebSocket
-from app.services import ai_model, uart
-from app.schemas.predict import PredictionResponse
-from fastapi.responses import JSONResponse
-
-import numpy as np
 import cv2
+import numpy as np
+import asyncio
+from fastapi import APIRouter, WebSocket
 
 router = APIRouter()
 
@@ -15,21 +12,21 @@ async def video_ws(websocket: WebSocket):
 
     try:
         while True:
-            # Nhận bytes từ client
             data = await websocket.receive_bytes()
 
-            # Chuyển bytes -> numpy array -> ảnh
+            # decode frame
             nparr = np.frombuffer(data, np.uint8)
             frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
             if frame is not None:
-                # Xử lý AI model ở đây (demo: chỉ hiển thị frame)
-                prediction = ai_model.predict(frame)
-                
-                cv2.imshow("Received", frame)
-                if cv2.waitKey(1) & 0xFF == ord("q"):
-                    break
+                # 👉 xử lý AI nên để vào thread pool, tránh chặn loop
+                # prediction = await predict_async(frame)
+
+                # thay vì imshow, trả về JSON cho client
+                await websocket.send_json({"status": "ok", "shape": frame.shape})
+
+            # nghỉ 1 tí để nhường CPU cho event loop
+            await asyncio.sleep(0)
+
     except Exception as e:
         print("Client disconnected:", e)
-    finally:
-        cv2.destroyAllWindows()
