@@ -18,7 +18,9 @@ async def worker():
         try:
             label, prob = ai_model.predict_action(feat)  # sync predict
             print(f"predicted: {label}, prob: {prob:.2f}")
-            uart.send_command(label)
+
+            if(uart.is_serial_connected() and label is not None):
+                uart.send_command(label)
         except Exception as e:
             print("Predict error:", e)
         finally:

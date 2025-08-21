@@ -10,3 +10,7 @@ except serial.SerialException as e:
 def send_command(command: str):
     msg = (command + "\n").encode()
     ser.write(msg)
+
+def is_serial_connected() -> bool:
+    global ser
+    return ser is not None and ser.is_open
