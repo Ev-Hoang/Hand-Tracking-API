@@ -4,33 +4,39 @@ import asyncio
 from fastapi import APIRouter, WebSocket
 from app.services import ai_model, uart
 
-
-
 router = APIRouter()
 
-# Queue chỉ giữ 1 feature mới nhất
 queue = asyncio.Queue(maxsize=1)
-
-
 uart.init_uart()
 uart.start_read_thread()
 
-# Async worker đọc dữ liệu từ UART
 async def uart_worker():
+    """
+    worker read uart data from uart_rx_queue simultaneously 
+    Input:
+        None
+    Output:
+        None
+    """
     print("UART worker started")
     while True:
         data = await uart.uart_rx_queue.get()
         uart.data_received(data)
         uart.uart_rx_queue.task_done()
 
-# Worker chạy predict liên tục
 async def ai_worker():
+    """
+    Worker predict action from feature queue and send command via UART
+    Input:
+        None
+    Output:
+        None
+    """
     print("AI worker started")
     while True:
         feat = await queue.get()
         try:
-            label, prob = ai_model.predict_action(feat)  # sync predict
-            # print(f"predicted: {label}, prob: {prob:.2f}")
+            label, prob = ai_model.predict_action(feat)  
             if uart.is_serial_connected() and label is not None:
                 asyncio.create_task(uart.send_command_async(label))
         except Exception as e:
@@ -38,10 +44,16 @@ async def ai_worker():
         finally:
             queue.task_done()
 
-# Tạo task worker khi server start
 workers_started = False
 @router.on_event("startup")
 async def startup_event():
+    """
+    Start background workers on startup
+    Input: 
+        None
+    Output: 
+        None
+    """
     global workers_started
     if not workers_started:
         uart.event_loop = asyncio.get_running_loop() 
@@ -53,6 +65,13 @@ async def startup_event():
 
 @router.websocket("/ws/video")
 async def video_ws(websocket: WebSocket):
+    """
+    WebSocket endpoint to receive video frames and extract features
+    Input: 
+        None
+    Output: 
+        None
+    """
     await websocket.accept()
     print("Client connected!")
     try:
@@ -73,5 +92,3 @@ async def video_ws(websocket: WebSocket):
 
     except Exception as e:
         print("Client disconnected:", e)
-
-# CONCLUSOIN : CODE HAVE A PROBLEM , CANT READ DATA FROM UART (uart.py)

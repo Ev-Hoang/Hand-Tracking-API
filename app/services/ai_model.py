@@ -1,10 +1,6 @@
 import numpy as np
-import json
 from collections import deque
 from tensorflow.keras.models import load_model
-from fastapi import APIRouter, WebSocket
-
-router = APIRouter()
 
 # Load model
 MODEL_PATH = "action_gru_model.h5"
@@ -16,6 +12,7 @@ seq_buffer = deque(maxlen=TIMESTEPS)
 
 def predict_action(feat):
     """
+    Predict action from feature sequence
     Input:
         feat : np.ndarray (42,)
         model: keras model
@@ -23,10 +20,8 @@ def predict_action(feat):
         label: str hoặc None
         prob : float
     """
-    # thêm feature vào buffer
     seq_buffer.append(feat)
 
-    # chỉ predict khi đủ sequence
     if len(seq_buffer) == TIMESTEPS:
         x = np.expand_dims(np.asarray(seq_buffer, dtype=np.float32), axis=0)  # (1, T, 42)
         pred = model.predict(x, verbose=0)[0]  # (num_classes,)
