@@ -42,15 +42,14 @@ async def send_command_async(command: str):
 # ===================== READ THREAD =====================
 def _uart_read_loop():
     """Đọc dữ liệu từ UART liên tục trong một thread"""
+    global event_loop
     global _stop_thread
     while not _stop_thread and is_serial_connected():
-        print("[UART] Đang đọc dữ liệu...")
         try:
             data = ser.readline() 
-            if data:
+            if data and event_loop is not None:
                 # Đẩy dữ liệu vào async queue
-                loop = asyncio.get_event_loop()
-                asyncio.run_coroutine_threadsafe(uart_rx_queue.put(data), loop)
+                asyncio.run_coroutine_threadsafe(uart_rx_queue.put(data), event_loop)
         except Exception as e:
             print(f"[UART] Read error: {e}")
             break

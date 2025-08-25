@@ -30,20 +30,24 @@ async def ai_worker():
         feat = await queue.get()
         try:
             label, prob = ai_model.predict_action(feat)  # sync predict
-            print(f"predicted: {label}, prob: {prob:.2f}")
+            # print(f"predicted: {label}, prob: {prob:.2f}")
             if uart.is_serial_connected() and label is not None:
-                uart.send_command_async(label)
-
+                asyncio.create_task(uart.send_command_async(label))
         except Exception as e:
             print("Predict error:", e)
         finally:
             queue.task_done()
 
 # Tạo task worker khi server start
+workers_started = False
 @router.on_event("startup")
 async def startup_event():
-    asyncio.create_task(ai_worker())
-    asyncio.create_task(uart_worker())
+    global workers_started
+    if not workers_started:
+        uart.event_loop = asyncio.get_running_loop() 
+        asyncio.create_task(ai_worker())
+        asyncio.create_task(uart_worker())
+        workers_started = True
 
 
 
