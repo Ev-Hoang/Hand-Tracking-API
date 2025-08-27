@@ -22,7 +22,6 @@ async def video_ws(websocket: WebSocket):
             if "bytes" in msg:
                 feat = np.frombuffer(msg["bytes"], dtype=np.float32)
 
-                # Nếu queue đầy, bỏ frame cũ đi
                 if queue.full():
                     try:
                         _ = queue.get_nowait()
