@@ -4,7 +4,7 @@ from tensorflow.keras.models import load_model
 
 # Load model
 MODEL_PATH = "action_gru_model.h5"
-ACTIONS = ["nocommand", "swipeleft", "swiperight"]
+ACTIONS = ["activate","nocommand", "swipeleft", "swiperight"]
 
 model = load_model(MODEL_PATH)
 _, TIMESTEPS, FEATURES = model.input_shape
