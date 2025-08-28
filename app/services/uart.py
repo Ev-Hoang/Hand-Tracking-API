@@ -51,8 +51,9 @@ def send_command(command: str):
     if not is_serial_connected():
         print("[UART] Cannot Send! (Havent connect to COM port)")
         return
-    msg = (command + "\n").encode()
+    msg = (command).encode()
     ser.write(msg)
+    print(f"[UART] Sent: {command}")
 
 async def send_command_async(command: str):
     await asyncio.to_thread(send_command, command)
