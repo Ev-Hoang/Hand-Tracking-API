@@ -3,7 +3,7 @@ import threading
 import asyncio
 
 # ===================== CONFIG =====================
-UART_PORT = "COM3"
+UART_PORT = "COM4"
 UART_BAUDRATE = 115200
 UART_TIMEOUT = 1  
 
