@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api import router   # router nằm trong __init__.py
+from app.api import router 
 
 app = FastAPI()
 app.include_router(router, prefix="/api")
