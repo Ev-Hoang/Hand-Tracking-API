@@ -3,8 +3,8 @@ from collections import deque
 from tensorflow.keras.models import load_model
 
 # Load model
-MODEL_PATH = "action_gru_model.h5"
-ACTIONS = ["ACT","nocommand", "SW_L", "SW_R"]
+MODEL_PATH = "HandTracking-TrainingDatasets-ClientTesting/action_gru_model.h5" # Change to your model path if needed
+ACTIONS = ["ACT","nocommand", "SW_L", "SW_R"] # Change to your action list if needed
 
 model = load_model(MODEL_PATH)
 _, TIMESTEPS, FEATURES = model.input_shape
