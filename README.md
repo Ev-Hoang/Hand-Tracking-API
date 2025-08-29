@@ -58,4 +58,8 @@ MODEL_PATH = "HandTracking-TrainingDataset-TestingClient/action_gru_model.h5"
 Use conda to manage dependencies and isolate environments.
 Use pip for packages not available in Conda (e.g., mediapipe).
 
+- If you want use your own data set, with own command, follow the .ipynb file in HandTracking-TrainingDatasets-ClientTesting/ or import your datasets and modily the numpy reading function to train.
+- You can create another method to send hand features through API, using the same websocket endpoint!
+- Instead of COM-Serial to STM32, u can connect another device with COM-Serial Endpoint and modily the command code, or modify inside API-CODE to send whatever you prefer.
+
 Keep the model file (.h5) inside the HandTracking-TrainingDataset-TestingClient/ directory for consistency.
