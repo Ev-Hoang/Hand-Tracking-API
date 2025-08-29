@@ -1,9 +1,18 @@
-name: fastapi-env
+name: handtracking-env
 channels:
   - conda-forge
 dependencies:
-  - python=3.10
+  - python=3.11
+  - numpy
+  - opencv
+  - scikit-learn
+  - scipy
   - pip
+  - ipykernel 
   - pip:
+      - tensorflow==2.15
+      - mediapipe==0.10.14
+      - websockets
+      - pyserial
       - fastapi
       - uvicorn[standard]
