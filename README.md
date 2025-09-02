@@ -30,18 +30,26 @@ python -m ipykernel install --user --name=handtracking-env --display-name "Pytho
 
 ## Setup
 
-### 1. Run the API server
+### 1.Run the STM32 (Optional)
+File API_CMD_RECEIVER currently use STM32F103C8T6 (Blue-pill). SETUP:
+- Use STM32CubeIDE or STM32-Utility (with ST-LINK) to import code.
+- PIN A1 -> A10 LED + Resistor ( 150 - 300 Ohm is preferable) of your choice.
+- Start the STM32 before running the API in order for API-server to read the COM-Port.
+
+If dont have the STM32, it's okay, you can still skip this step and still able to test the API itselfs.
+
+### 2. Run the API server
 ```bash
 uvicorn app.main:app --reload
 ```
 
-2. Access the API
+### 3. Access the API
 ```bash
 REST API endpoint: http://127.0.0.1:8000
 WebSocket endpoint: ws://127.0.0.1:8000/ws
 ```
 
-4. Model path
+### 4. Model path
 The trained model is stored under:
 
 ```bash
